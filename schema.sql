@@ -32,8 +32,6 @@ CREATE TABLE combo (              -- M:N: menu_item × menu_item
 -- TODO: INSERT ข้อมูลตัวอย่างทุกตาราง
 --   ★ ควรมีออเดอร์ status 'open' อย่างน้อย 1 โต๊ะ ไว้ทดสอบ "เปิดออเดอร์ซ้ำโต๊ะเดิมไม่ได้"
 -- show tables;
-select 	*
-from 	customer c 
 -- DROP TABLE IF EXISTS combo, customer, menu_item, dining_table, food_order, order_item;
 -- ============================================================
 --  1. สร้างตารางพร้อมระบุคอลัมน์และข้อกำหนด (Constraints)
@@ -98,6 +96,10 @@ INSERT INTO customer (name, phone, member_tier) VALUES
 ('สมชาย ใจดี', '0812345678', 'Gold'),
 ('วิภาดา รักดี', '0898765432', 'Silver'),
 ('กิตติพงษ์ มั่นคง', '0861112223', 'VIP'),
+('สมสี มีใจ', '0877888999', 'VIP'),
+('ภูสิทธิ์ ถินนอก', '0826648753', 'Silver'),
+('กัยตินัน หน่อยชำนาน', '0878855662', 'Gold'),
+('อาบาตาคำ ไม่ไหวเเล้ว', '0836644125', 'Bronze'),
 ('อนันต์ มีสุข', '0855556666', 'Bronze');
 
 -- 2.2 ข้อมูลรายการอาหาร/เครื่องดื่ม (menu_item)
