@@ -185,7 +185,6 @@ def get_order(order_id):
 
 
 def check_table_free(table_id, order_id=None):
-  
     """ตรวจก่อนเปิดออเดอร์ (status = 'open') — ถ้าไม่ผ่านให้ raise ValueError("ข้อความ")
     (หน้าเว็บจะแสดงข้อความนั้นเป็น alert ให้ผู้ใช้เห็น และไม่บันทึกข้อมูล)
     1) โต๊ะต้องมีอยู่จริง → SELECT ... FROM dining_table WHERE table_id = %s
@@ -198,11 +197,6 @@ def check_table_free(table_id, order_id=None):
 
 
 def create_order(data):
-    sql = "INSERT INTO food_order (cust_id, table_id, order_time, status) VALUES (%s, %s, %s, %s)"
-    params = (data["cust_id"], data["table_id"], blank_to_none(data["order_time"]), data["status"])
-    if data["status"] == "open":
-        check_table_free(data["table_id"])
-    return run_command(sql, params)
     """เพิ่ม ออเดอร์ ใหม่ — data มีคีย์: cust_id, table_id, order_time, status
     คำใบ้:
       1) ถ้า status = 'open' → เรียก check_table_free(data["table_id"]) ก่อน (โต๊ะต้องว่าง)
