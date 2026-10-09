@@ -4,14 +4,15 @@
 #  ★ นิสิตต้องแก้ 4 บรรทัดนี้ให้เป็น user / password ของตัวเอง
 #    (ที่อาจารย์แจกให้สำหรับเชื่อมต่อ database server ของวิชา)
 # ============================================================
-DB_HOST = "202.28.34.202"               # TODO: host ที่อาจารย์แจกให้
-DB_USER = "s68011212148"                       # TODO: username ของนิสิต
-DB_PASSWORD = "s68011212148pwd"                # TODO: password ของนิสิต
-DB_NAME = "prymania_s68011212148"              # TODO: ชื่อฐานข้อมูลของนิสิต
-DB_PORT = 3306
+# DB_HOST = "202.28.34.202"               # TODO: host ที่อาจารย์แจกให้
+# DB_USER = "s68011212148"                       # TODO: username ของนิสิต
+# DB_PASSWORD = "s68011212148pwd"                # TODO: password ของนิสิต
+# DB_NAME = "prymania_s68011212148"              # TODO: ชื่อฐานข้อมูลของนิสิต
+# DB_PORT = 3306
 
 # ★ ถ้าใช้ MySQL ในเครื่องตัวเอง (ดูคู่มือหน้า 12) ให้ใช้ค่านี้แทน 4 บรรทัดบน
-# DB_HOST = "localhost"
-# DB_USER = "root"
-# DB_PASSWORD = "abcd1234"
-# DB_NAME = "project69"
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = "abcd1234"
+DB_NAME = "project69"
+DB_PORT = 3306
