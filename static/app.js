@@ -71,7 +71,22 @@ const ENTITIES = {
       {
         "key": "category",
         "label": "หมวดหมู่",
-        "type": "text"
+        "type": "select",
+        "options": [
+          "",
+          {
+            "value": "Main",
+            "label": "อาหารจานหลัก"
+          },
+          {
+            "value": "Drink",
+            "label": "เครื่องดื่ม"
+          },
+          {
+            "value": "Combo",
+            "label": "คอมโบเซ็ต"
+          }
+        ]
       }
     ],
     "form": [
@@ -83,7 +98,22 @@ const ENTITIES = {
       {
         "key": "category",
         "label": "หมวดหมู่",
-        "type": "text"
+        "type": "select",
+        "options": [
+          "",
+          {
+            "value": "Main",
+            "label": "อาหารจานหลัก"
+          },
+          {
+            "value": "Drink",
+            "label": "เครื่องดื่ม"
+          },
+          {
+            "value": "Combo",
+            "label": "คอมโบเซ็ต"
+          }
+        ]
       },
       {
         "key": "price",
@@ -95,8 +125,14 @@ const ENTITIES = {
         "label": "พร้อมขาย",
         "type": "select",
         "options": [
-          "1",
-          "0"
+          {
+            "value": "1",
+            "label": "พร้อมขาย"
+          },
+          {
+            "value": "0",
+            "label": "ไม่พร้อมขาย"
+          }
         ]
       }
     ]
