@@ -180,6 +180,12 @@ const ENTITIES = {
         "type": "number"
       },
       {
+        "key": "items",
+        "label": "รายการอาหาร",
+        "type": "items",
+        "optionsFrom": { "api": "/api/menu-items", "value": "item_id", "label": "name" }
+      },
+      {
         "key": "order_time",
         "label": "เวลาสั่ง",
         "type": "datetime-local"
@@ -203,8 +209,28 @@ const $ = (s) => document.querySelector(s);
 function setStatus(el, msg, cls = "") { el.className = "status " + cls; el.textContent = msg; }
 async function api(url, opts) { const res = await fetch(url, opts); return res.json(); }
 
+function itemRowHtml(f, row = {}) {
+  const opts = f.options.map(o =>
+    '<option value="' + o.value + '"' + (String(o.value) === String(row.item_id ?? "") ? " selected" : "") + '>' + o.label + '</option>'
+  ).join("");
+  return '<div class="item-row" style="display:flex;gap:8px;margin-bottom:6px">' +
+    '<select class="it-item" style="flex:1">' + opts + '</select>' +
+    '<input class="it-qty" type="number" min="1" value="' + (row.qty ?? 1) + '" style="width:80px">' +
+    '<button type="button" class="btn sm del" onclick="this.parentElement.remove()">✕</button></div>';
+}
+function addItemRow(key) {
+  const f = ENTITIES[current].form.find(x => x.key === key);
+  $("#f_" + key).insertAdjacentHTML("beforeend", itemRowHtml(f));
+}
+
 function fieldHtml(f, prefix, value = "") {
   if (f.type === "heading") return '<div class="form-section">' + f.label + '</div>';
+  if (f.type === "items") {
+  const rows = (Array.isArray(value) && value.length) ? value : [{}];
+  return '<div class="field"><label>' + f.label + '</label>' +
+    '<div id="' + prefix + f.key + '">' + rows.map(r => itemRowHtml(f, r)).join("") + '</div>' +
+    '<button type="button" class="btn sm" onclick="addItemRow(\'' + f.key + '\')">+ เพิ่มรายการอาหาร</button></div>';
+}
   let input;
   if (f.type === "select") {
     // options เป็นข้อความ "a" หรือ {value, label} ก็ได้
@@ -264,12 +290,16 @@ async function openForm(title, data = {}) {
   $("#formFields").innerHTML = formFields().map(f => fieldHtml(f, "f_", data[f.key])).join("");
   $("#modal").classList.remove("hidden");
 }
-function collectForm() { const d = {}; formFields().filter(f => f.key).forEach(f => d[f.key] = $("#f_" + f.key).value); return d; }
-async function editRow(id) {
-  const cfg = ENTITIES[current];
-  const r = await api(cfg.api + "/" + id);
-  if (!r.ok) { alert((r.todo ? "🚧 " : "⚠️ ") + r.error); return; }
-  editingId = id; openForm("แก้ไขข้อมูล", r.data);
+function collectForm() {
+  const d = {};
+  formFields().filter(f => f.key).forEach(f => {
+    if (f.type === "items") {
+      d[f.key] = [...document.querySelectorAll("#f_" + f.key + " .item-row")]
+        .map(r => ({ item_id: r.querySelector(".it-item").value, qty: r.querySelector(".it-qty").value }))
+        .filter(x => x.item_id);
+    } else d[f.key] = $("#f_" + f.key).value;
+  });
+  return d;
 }
 async function deleteRow(id) {
   if (!confirm("ยืนยันการลบ?")) return;
