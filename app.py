@@ -89,7 +89,6 @@ def item_update(_id):
 @app.route("/api/menu-items/<int:_id>", methods=["DELETE"])
 def item_delete(_id):
     return safe(db.delete_item, _id)
-
 # ---- ออเดอร์ ----
 @app.route("/api/orders", methods=["GET"])
 def orders_list():
