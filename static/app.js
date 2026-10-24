@@ -233,7 +233,6 @@ function fieldHtml(f, prefix, value = "") {
 }
   let input;
   if (f.type === "select") {
-    // options เป็นข้อความ "a" หรือ {value, label} ก็ได้
     input = '<select id="' + prefix + f.key + '">' +
       f.options.map(o => {
         const v = typeof o === "object" ? o.value : o;
@@ -243,7 +242,6 @@ function fieldHtml(f, prefix, value = "") {
   } else { input = '<input id="' + prefix + f.key + '" type="' + f.type + '" value="' + (value ?? "") + '">'; }
   return '<div class="field"><label>' + f.label + '</label>' + input + '</div>';
 }
-// ช่อง select ที่มี optionsFrom → ดึงตัวเลือกจาก API (เช่น รายชื่อหมวดหมู่จากฐานข้อมูล)
 async function loadOptions(fields, forSearch) {
   for (const f of fields.filter(f => f.optionsFrom)) {
     const src = f.optionsFrom, r = await api(src.api);
@@ -252,7 +250,6 @@ async function loadOptions(fields, forSearch) {
     if (forSearch && r.ok) f.options.unshift({ value: "", label: "ทั้งหมด" });
   }
 }
-// ช่องในฟอร์มที่ใช้อยู่ตอนนี้ (ช่อง editOnly แสดงเฉพาะตอนแก้ไข)
 function formFields() { return ENTITIES[current].form.filter(f => !f.editOnly || editingId !== null); }
 async function buildSearch() {
   const cfg = ENTITIES[current];
@@ -327,3 +324,15 @@ $("#btnSave").onclick = save;
 $("#btnCancel").onclick = () => $("#modal").classList.add("hidden");
 buildSearch();
 setStatus($("#status"), 'กด "ค้นหา" เพื่อแสดงข้อมูล');
+
+async function editRow(id) {
+  try {
+    const cfg = ENTITIES[current];
+    const r = await api(cfg.api + "/" + id);
+    if (!r.ok) { alert((r.todo ? "🚧 " : "⚠️ ") + r.error); return; }
+    editingId = id;
+    await openForm("แก้ไขข้อมูล", r.data || {});
+  } catch (e) {
+    alert("เปิดฟอร์มแก้ไขไม่ได้: " + e.message);
+  }
+}
