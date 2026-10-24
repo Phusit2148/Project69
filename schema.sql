@@ -71,27 +71,31 @@ INSERT INTO customer (name, phone, member_tier) VALUES
 ('อนันต์ มีสุข', '0855556666', 'Bronze');
 -- 2.2 ข้อมูลรายการอาหาร/เครื่องดื่ม (menu_item)
 INSERT INTO menu_item (name, category, price, is_available) VALUES
-('ข้าวมันไก่', 'Main', 60.00, TRUE),           -- item_id = 1
-('ข้าวผัดกุ้ง', 'Main', 80.00, TRUE),           -- item_id = 2
-('ต้มยำกุ้ง', 'Main', 150.00, TRUE),          -- item_id = 3
-('ชาดำเย็น', 'Drink', 30.00, TRUE),            -- item_id = 4
-('น้ำอัดลม', 'Drink', 25.00, TRUE),            -- item_id = 5
-('เซ็ตสุดคุ้ม A', 'Combo', 150.00, TRUE),       -- item_id = 6 (เมนูชุด)
-('เซ็ตครอบครัว B', 'Combo', 300.00, TRUE);      -- item_id = 7 (เมนูชุด)
+('ข้าวมันไก่', 'Main', 60.00, TRUE),           
+('ข้าวผัดกุ้ง', 'Main', 80.00, TRUE),           
+('ต้มยำกุ้ง', 'Main', 150.00, TRUE),          
+('ชาดำเย็น', 'Drink', 30.00, TRUE),            
+('น้ำอัดลม', 'Drink', 25.00, TRUE),            
+('เซ็ตสุดคุ้ม A', 'Combo', 150.00, TRUE),       
+('เซ็ตครอบครัว B', 'Combo', 300.00, TRUE);      
 
 -- 2.3 ข้อมูลโต๊ะอาหาร (dining_table)
 INSERT INTO dining_table (seats, zone) VALUES
 (2, 'Indoor'),    -- table_id = 1
 (4, 'Indoor'),    -- table_id = 2
 (4, 'Outdoor'),   -- table_id = 3
-(8, 'VIP Room');  -- table_id = 4
+(8, 'VIP Room'),  -- table_id = 4
+(5, 'Indoor'),    
+(6, 'Indoor'),    
+(5, 'Outdoor'),   
+(10, 'VIP Room');  
 
 -- 2.4 ข้อมูลคำสั่งซื้อ (food_order)
 -- *มี status 'open' อยู่ที่ table_id = 2 เพื่อรองรับการทดสอบ "เปิดออเดอร์ซ้ำโต๊ะเดิมไม่ได้"*
 INSERT INTO food_order (cust_id, table_id, order_time, status) VALUES
-(1, 1, '2026-10-07 12:00:00', 'paid'),   -- order_id = 1 (เช็คบิลแล้ว)
-(2, 2, NOW(), 'open'),                   -- order_id = 2 (กำลังนั่งทานอยู่ - โต๊ะ 2)
-(3, 3, NOW(), 'open');                   -- order_id = 3 (กำลังนั่งทานอยู่ - โต๊ะ 3)
+(1, 1, '2026-10-07 12:00:00', 'paid'),   
+(2, 2, NOW(), 'open'),                   
+(3, 3, NOW(), 'open');                   
 
 -- 2.5 ข้อมูลรายการที่สั่งในออเดอร์ (order_item)
 INSERT INTO order_item (order_id, item_id, qty, note) VALUES
