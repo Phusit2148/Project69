@@ -180,7 +180,7 @@ def get_order(order_id):
         return None
     order = rows[0]
     order["items"] = run_query(
-        "SELECT item_id, qty FROM order_item WHERE order_id = %s", (order_id,))
+    "SELECT item_id, qty, note FROM order_item WHERE order_id = %s", (order_id,))
     return order
 
 
@@ -220,8 +220,8 @@ def create_order(data):
             (data["cust_id"], data["table_id"], order_time, status))
         order_id = cur.lastrowid
         cur.executemany(
-            "INSERT INTO order_item (order_id, item_id, qty, note) VALUES (%s, %s, %s, NULL)",
-            [(order_id, i, q) for i, q in items.items()])
+        "INSERT INTO order_item (order_id, item_id, qty, note) VALUES (%s, %s, %s, %s)",
+        [(order_id, i, q, n) for i, q, n in items])
         conn.commit()                               # สำเร็จทั้งหัวและรายการ หรือไม่ก็ไม่บันทึกเลย
         return {"new_id": order_id, "affected": 1}
     except Exception:
@@ -243,12 +243,12 @@ def update_order(order_id, data):
             "UPDATE food_order SET cust_id=%s, table_id=%s, order_time=%s, status=%s WHERE order_id=%s",
             (data["cust_id"], data["table_id"], order_time, status, order_id))
         # เก็บ note เดิมไว้ก่อนลบ แล้วใส่กลับให้เมนูที่ยังอยู่
-        cur.execute("SELECT item_id, note FROM order_item WHERE order_id=%s", (order_id,))
+        cur.execute("DELETE FROM order_item WHERE order_id=%s", (order_id,))
         notes = {r[0]: r[1] for r in cur.fetchall()}
         cur.execute("DELETE FROM order_item WHERE order_id=%s", (order_id,))
         cur.executemany(
-            "INSERT INTO order_item (order_id, item_id, qty, note) VALUES (%s, %s, %s, %s)",
-            [(order_id, i, q, notes.get(i)) for i, q in items.items()])
+    "INSERT INTO order_item (order_id, item_id, qty, note) VALUES (%s, %s, %s, %s)",
+    [(order_id, i, q, n) for i, q, n in items])
         conn.commit()
         return {"new_id": None, "affected": 1}
     except Exception:
@@ -272,15 +272,21 @@ def delete_order_item(order_id, item_id):
                        (order_id, item_id))
     
 def _merge_items(items):
+
     merged = {}
     for it in items or []:
         item_id, qty = int(it["item_id"]), int(it.get("qty") or 1)
         if qty < 1:
             raise ValueError("จำนวนต้องมากกว่า 0")
-        merged[item_id] = merged.get(item_id, 0) + qty
+        note = (it.get("note") or "").strip()
+        m = merged.setdefault(item_id, {"qty": 0, "notes": []})
+        m["qty"] += qty
+        if note and note not in m["notes"]:
+            m["notes"].append(note)
     if not merged:
         raise ValueError("กรุณาเลือกรายการอาหารอย่างน้อย 1 รายการ")
-    return merged
+    # คืนเป็นรายการ (item_id, qty, note) พร้อมใช้กับ executemany
+    return [(i, m["qty"], blank_to_none(", ".join(m["notes"]))) for i, m in merged.items()]
 # ============================================================
 #  REPORT (รายงาน — ใช้ JOIN + GROUP BY + subquery)
 #  ★ ชื่อคอลัมน์ใน SELECT จะกลายเป็นหัวตารางบนเว็บ — ใช้ AS 'ชื่อภาษาไทย' ได้
