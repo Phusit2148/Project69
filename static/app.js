@@ -293,6 +293,11 @@ function collectForm() {
     if (f.type === "items") {
       d[f.key] = [...document.querySelectorAll("#f_" + f.key + " .item-row")]
         .map(r => ({ item_id: r.querySelector(".it-item").value, qty: r.querySelector(".it-qty").value }))
+        .map(r => ({
+  item_id: r.querySelector(".it-item").value,
+  qty: r.querySelector(".it-qty").value,
+  note: r.querySelector(".it-note").value.trim()
+}))
         .filter(x => x.item_id);
     } else d[f.key] = $("#f_" + f.key).value;
   });
